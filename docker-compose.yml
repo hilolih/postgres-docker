@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: test
+    networks:
+      pgnet:
+        ipv4_address: 172.28.0.11
+
+  postgres-gui:
+    image: donnex/pgweb
+    command: -s --bind=0.0.0.0 --listen=8080 --url postgresql://test:@postgres/test?sslmode=disable
+    ports:
+      - "8089:8080"
+    networks:
+      pgnet:
+        ipv4_address: 172.28.0.12
+
+networks:
+  pgnet:
+    driver: bridge 
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
